@@ -24,6 +24,9 @@ struct Args {
     #[arg(long)]
     out_dir: Option<PathBuf>,
 
+    #[arg(long)]
+    cfg: Vec<String>,
+
     input_path: String,
 }
 
