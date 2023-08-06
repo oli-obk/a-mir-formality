@@ -266,6 +266,17 @@ where
     }
 }
 
+impl Parse for String {
+    #[tracing::instrument(level = "trace", ret)]
+    fn parse<'t>(_scope: &Scope, text: &'t str) -> ParseResult<'t, Self> {
+        let ((), text) = expect_char('"', text)?;
+        let (str, text) = text
+            .split_once('"')
+            .ok_or_else(|| ParseError::at(text, "string without closing quote".into()))?;
+        Ok((str.to_owned(), text))
+    }
+}
+
 impl Parse for usize {
     #[tracing::instrument(level = "trace", ret)]
     fn parse<'t>(_scope: &Scope, text: &'t str) -> ParseResult<'t, Self> {

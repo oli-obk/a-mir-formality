@@ -332,6 +332,7 @@ impl WhereClause {
                 Some(Wc::for_all(&vars, wc))
             }
             WhereClauseData::TypeOfConst(_, _) => None,
+            WhereClauseData::Cfg(_) => None,
         }
     }
 }
@@ -349,6 +350,11 @@ pub enum WhereClauseData {
 
     #[grammar(type_of_const $v0 is $v1)]
     TypeOfConst(Const, Ty),
+
+    /// A bound that always holds if its argument
+    /// was passed to formality with `--cfg`.
+    #[grammar(cfg($v0))]
+    Cfg(String),
 }
 
 #[term($data)]

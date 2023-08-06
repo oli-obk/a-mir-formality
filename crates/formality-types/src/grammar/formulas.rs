@@ -31,6 +31,9 @@ pub enum Predicate {
 
     #[grammar(@ConstHasType($v0, $v1))]
     ConstHasType(Const, Ty),
+
+    #[grammar(@Cfg($v0))]
+    Cfg(String),
 }
 
 /// A coinductive predicate is one that can be proven via a cycle.
@@ -84,6 +87,7 @@ pub enum Skeleton {
     WellFormedTraitRef(TraitId),
     IsLocal(TraitId),
     ConstHasType,
+    Cfg(String),
 
     Equals,
     Sub,
@@ -125,6 +129,7 @@ impl Predicate {
                 Skeleton::ConstHasType,
                 vec![ct.clone().upcast(), ty.clone().upcast()],
             ),
+            Predicate::Cfg(cfg) => (Skeleton::Cfg(cfg.clone()), vec![]),
         }
     }
 }

@@ -125,6 +125,18 @@ impl Visit for Lt {
     }
 }
 
+impl Visit for String {
+    fn free_variables(&self) -> Vec<Variable> {
+        vec![]
+    }
+
+    fn size(&self) -> usize {
+        1
+    }
+
+    fn assert_valid(&self) {}
+}
+
 impl Visit for usize {
     fn free_variables(&self) -> Vec<Variable> {
         vec![]

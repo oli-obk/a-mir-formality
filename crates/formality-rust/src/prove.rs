@@ -389,6 +389,7 @@ impl ToWcs for WhereClause {
             WhereClauseData::TypeOfConst(ct, ty) => {
                 Predicate::ConstHasType(ct.clone(), ty.clone()).upcast()
             }
+            WhereClauseData::Cfg(cfg) => Predicate::Cfg(cfg.clone()).upcast(),
         }
     }
 }

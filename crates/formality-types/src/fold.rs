@@ -108,6 +108,12 @@ impl Fold for Lt {
     }
 }
 
+impl Fold for String {
+    fn substitute(&self, _substitution_fn: SubstitutionFn<'_>) -> Self {
+        self.clone()
+    }
+}
+
 impl Fold for usize {
     fn substitute(&self, _substitution_fn: SubstitutionFn<'_>) -> Self {
         *self

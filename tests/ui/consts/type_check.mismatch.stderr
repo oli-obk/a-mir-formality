@@ -1,38 +1,4 @@
-Error: expected `:`
+Error: check_trait_impl(impl <> Foo < const 42_(rigid (scalar u32)) > for (rigid (scalar u32)) where [cfg("mismatch")] { })
 
 Caused by:
-    0: (holds)
-               ] {}
-               
-               impl<> Foo<const 42_u32> for u32 where [
-                   cfg(mismatch)
-               ] {}
-           }
-       ]
-       
-    1: expected `!`
-    2:  Foo<const true> for u32 where [
-                   cfg(holds)
-               ] {}
-               
-               impl<> Foo<const 42_u32> for u32 where [
-                   cfg(mismatch)
-               ] {}
-           }
-       ]
-       
-    3: failed to parse //@revisions: holds mismatch
-       [
-           crate Foo {
-               trait Foo<const C> where [type_of_const C is bool] {}
-       
-               impl<> Foo<const true> for u32 where [
-                   cfg(holds)
-               ] {}
-               
-               impl<> Foo<const 42_u32> for u32 where [
-                   cfg(mismatch)
-               ] {}
-           }
-       ]
-       
+    failed to prove {Foo((rigid (scalar u32)), const 42_(rigid (scalar u32)))} given {@ Cfg("mismatch")}, got {}

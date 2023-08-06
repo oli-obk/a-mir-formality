@@ -57,6 +57,7 @@ impl super::Check<'_> {
                 self.prove_parameter_well_formed(in_env, &assumptions, ct.clone())?;
                 self.prove_parameter_well_formed(in_env, assumptions, ty.clone())
             }
+            WhereClauseData::Cfg(_cfg) => Ok(()),
         }
     }
 
