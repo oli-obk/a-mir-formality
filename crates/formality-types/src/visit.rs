@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::{
     collections::Set,
-    grammar::{Lt, Parameter, Ty, Variable},
+    grammar::{Cfg, Lt, Parameter, Ty, Variable},
 };
 
 /// Invoked for each variable that we find when Visiting, ignoring variables bound by binders
@@ -125,7 +125,7 @@ impl Visit for Lt {
     }
 }
 
-impl Visit for String {
+impl Visit for Cfg {
     fn free_variables(&self) -> Vec<Variable> {
         vec![]
     }

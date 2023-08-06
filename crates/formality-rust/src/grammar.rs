@@ -4,8 +4,8 @@ use formality_macros::term;
 use formality_types::{
     cast::Upcast,
     grammar::{
-        AdtId, AssociatedItemId, Binder, Const, CrateId, Fallible, FieldId, FnId, Lt, Parameter,
-        TraitId, TraitRef, Ty, Wc,
+        AdtId, AssociatedItemId, Binder, Cfg, Const, CrateId, Fallible, FieldId, FnId, Lt,
+        Parameter, TraitId, TraitRef, Ty, Wc, Predicate,
     },
     term::Term,
 };
@@ -332,7 +332,7 @@ impl WhereClause {
                 Some(Wc::for_all(&vars, wc))
             }
             WhereClauseData::TypeOfConst(_, _) => None,
-            WhereClauseData::Cfg(_) => None,
+            WhereClauseData::Cfg(cfg) => Some(Predicate::Cfg(Cfg(!cfg.0)).upcast()),
         }
     }
 }
@@ -354,7 +354,7 @@ pub enum WhereClauseData {
     /// A bound that always holds if its argument
     /// was passed to formality with `--cfg`.
     #[grammar(cfg($v0))]
-    Cfg(String),
+    Cfg(Cfg),
 }
 
 #[term($data)]

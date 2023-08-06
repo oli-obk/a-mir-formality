@@ -4,7 +4,7 @@ use crate::{
     cast::{To, Upcast},
     collections::Set,
     derive_links::{Fold, Parameter, ParameterKind, Term},
-    grammar::{Binder, BoundVar},
+    grammar::{Binder, BoundVar, Cfg},
     set,
 };
 use std::fmt::Debug;
@@ -26,7 +26,7 @@ pub fn try_term<T>(text: &str) -> anyhow::Result<T>
 where
     T: Parse,
 {
-    term_with(None::<(String, Parameter)>, text)
+    term_with(None::<(String, Parameter)>, vec![], text)
 }
 
 /// Parses `text` as a term with the given bindings in scope.
@@ -34,12 +34,16 @@ where
 /// References to the given string will be replaced with the given parameter
 /// when parsing types, lifetimes, etc.
 #[track_caller]
-pub fn term_with<T, B>(bindings: impl IntoIterator<Item = B>, text: &str) -> anyhow::Result<T>
+pub fn term_with<T, B>(
+    bindings: impl IntoIterator<Item = B>,
+    cfgs: Vec<String>,
+    text: &str,
+) -> anyhow::Result<T>
 where
     T: Parse,
     B: Upcast<(String, Parameter)>,
 {
-    let scope = Scope::new(bindings.into_iter().map(|b| b.upcast()));
+    let scope = Scope::new(bindings.into_iter().map(|b| b.upcast()), cfgs);
     let (t, remainder) = match T::parse(&scope, text) {
         Ok(v) => v,
         Err(errors) => {
@@ -146,14 +150,20 @@ pub type ParseResult<'t, T> = Result<(T, &'t str), Set<ParseError<'t>>>;
 #[derive(Clone, Debug)]
 pub struct Scope {
     bindings: Vec<(String, Parameter)>,
+    cfgs: Vec<String>,
 }
 
 impl Scope {
     /// Creates a new scope with the given set of bindings.
-    pub fn new(bindings: impl IntoIterator<Item = (String, Parameter)>) -> Self {
+    pub fn new(bindings: impl IntoIterator<Item = (String, Parameter)>, cfgs: Vec<String>) -> Self {
         Self {
             bindings: bindings.into_iter().collect(),
+            cfgs,
         }
+    }
+
+    pub fn cfg_holds(&self, name: &str) -> bool {
+        self.cfgs.iter().any(|cfg| cfg == name)
     }
 
     /// Look for a variable with the given name.
@@ -266,14 +276,15 @@ where
     }
 }
 
-impl Parse for String {
+impl Parse for Cfg {
     #[tracing::instrument(level = "trace", ret)]
-    fn parse<'t>(_scope: &Scope, text: &'t str) -> ParseResult<'t, Self> {
+    fn parse<'t>(scope: &Scope, text: &'t str) -> ParseResult<'t, Self> {
         let ((), text) = expect_char('"', text)?;
         let (str, text) = text
             .split_once('"')
             .ok_or_else(|| ParseError::at(text, "string without closing quote".into()))?;
-        Ok((str.to_owned(), text))
+        let holds = scope.cfg_holds(str);
+        Ok((Cfg(holds), text))
     }
 }
 

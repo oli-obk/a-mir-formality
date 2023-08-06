@@ -4,7 +4,11 @@ use clap::Parser;
 use formality_check::check_all_crates;
 use formality_prove::{test_util::TestAssertion, Constraints};
 use formality_rust::grammar::Program;
-use formality_types::{collections::Set, parse::try_term};
+use formality_types::{
+    collections::Set,
+    grammar::Parameter,
+    parse::{term_with, try_term},
+};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -33,7 +37,7 @@ struct Args {
 pub fn main() -> anyhow::Result<()> {
     let args = Args::parse();
     let input: String = std::fs::read_to_string(&args.input_path)?;
-    let program: Program = try_term(&input)?;
+    let program: Program = term_with(None::<(String, Parameter)>, args.cfg, &input)?;
 
     if args.print_rust {
         eprintln!("{:#?}", program);

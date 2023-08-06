@@ -3,7 +3,7 @@ use std::sync::Arc;
 use crate::{
     cast::Upcast,
     collections::Set,
-    grammar::{Const, ConstData, Lt, LtData, Parameter, Ty, TyData, ValTree, Variable},
+    grammar::{Cfg, Const, ConstData, Lt, LtData, Parameter, Ty, TyData, ValTree, Variable},
     visit::Visit,
 };
 
@@ -108,7 +108,7 @@ impl Fold for Lt {
     }
 }
 
-impl Fold for String {
+impl Fold for Cfg {
     fn substitute(&self, _substitution_fn: SubstitutionFn<'_>) -> Self {
         self.clone()
     }

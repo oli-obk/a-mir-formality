@@ -1,4 +1,4 @@
-Error: check_trait_impl(impl <> Foo < const 42_(rigid (scalar u32)) > for (rigid (scalar u32)) where [cfg("mismatch")] { })
+Error: check_trait_impl(impl <> Foo < const 42_(rigid (scalar u32)) > for (rigid (scalar u32)) where [cfg(Cfg(true))] { })
 
 Caused by:
-    failed to prove {Foo((rigid (scalar u32)), const 42_(rigid (scalar u32)))} given {@ Cfg("mismatch")}, got {}
+    failed to prove {Foo((rigid (scalar u32)), const 42_(rigid (scalar u32)))} given {@ Cfg(Cfg(true))}, got {}

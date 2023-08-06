@@ -33,8 +33,13 @@ pub enum Predicate {
     ConstHasType(Const, Ty),
 
     #[grammar(@Cfg($v0))]
-    Cfg(String),
+    Cfg(Cfg),
 }
+
+/// A cfg bound either always holds or never holds.
+/// Which it is is decided at parsing time depending on the Scope's `cfgs`.
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Cfg(pub bool);
 
 /// A coinductive predicate is one that can be proven via a cycle.
 pub enum Coinductive {
@@ -87,7 +92,7 @@ pub enum Skeleton {
     WellFormedTraitRef(TraitId),
     IsLocal(TraitId),
     ConstHasType,
-    Cfg(String),
+    Cfg(Cfg),
 
     Equals,
     Sub,
