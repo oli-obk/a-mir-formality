@@ -1,6 +1,11 @@
 //@revisions: holds mismatch
+//@[holds]check-pass
 [
     crate Foo {
+        trait Cfg<const C> where [type_of_const C is bool] {}
+
+        impl<> Cfg<const true> for () where [] {}
+
         trait Foo<const C> where [type_of_const C is bool] {}
 
         impl<> Foo<const true> for u32 where [
