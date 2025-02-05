@@ -6,6 +6,7 @@ use formality_core::Upcast;
 use super::AliasName;
 use super::AliasTy;
 use super::Const;
+use super::Effect;
 use super::Parameter;
 use super::Parameters;
 use super::TraitId;
@@ -43,6 +44,9 @@ pub enum Predicate {
 
     #[grammar(@ConstHasType($v0, $v1))]
     ConstHasType(Const, Ty),
+
+    #[grammar(@HasEffect($v0, $v1))]
+    HasEffect(TraitRef, Effect),
 }
 
 /// A coinductive predicate is one that can be proven via a cycle.
@@ -142,6 +146,20 @@ impl Predicate {
             Predicate::ConstHasType(ct, ty) => (
                 Skeleton::ConstHasType,
                 vec![ct.clone().upcast(), ty.clone().upcast()],
+            ),
+            Predicate::HasEffect(
+                TraitRef {
+                    trait_id,
+                    parameters,
+                },
+                effect,
+            ) => (
+                Skeleton::IsImplemented(trait_id.clone()),
+                parameters
+                    .iter()
+                    .cloned()
+                    .chain([effect.clone().upcast()])
+                    .collect(),
             ),
         }
     }
