@@ -13,6 +13,7 @@ impl formality_core::language::HasKind<FormalityLang> for Parameter {
             Parameter::Ty(_) => ParameterKind::Ty,
             Parameter::Lt(_) => ParameterKind::Lt,
             Parameter::Const(_) => ParameterKind::Const,
+            Parameter::Effect(_) => ParameterKind::Effect,
         }
     }
 }

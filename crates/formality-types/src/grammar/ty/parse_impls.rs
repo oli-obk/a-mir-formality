@@ -7,7 +7,8 @@ use formality_core::Upcast;
 use formality_core::{seq, Set};
 
 use crate::grammar::{
-    AdtId, AssociatedItemId, Bool, ConstData, RefKind, RigidName, Scalar, TraitId,
+    AdtId, AssociatedItemId, Bool, ConstData, EffectData, EffectKind, RefKind, RigidName, Scalar,
+    TraitId,
 };
 
 use super::{AliasTy, AssociatedTyName, Lt, Parameter, ParameterKind, RigidTy, ScalarId, Ty};
@@ -135,6 +136,20 @@ impl CoreParse<Rust> for ConstData {
                 let ty: Ty = p.nonterminal()?;
                 Ok(ConstData::Value(Scalar::new(n).upcast(), ty))
             });
+        })
+    }
+}
+
+// For effects, we invest some effort into parsing them decently because it makes
+// writing tests so much more pleasant.
+impl CoreParse<Rust> for EffectData {
+    fn parse<'t>(scope: &Scope<Rust>, text: &'t str) -> ParseResult<'t, Self> {
+        Parser::multi_variant(scope, text, "EffectData", |parser| {
+            parser.parse_variant("Variable", Precedence::default(), |p| {
+                p.variable_of_kind(ParameterKind::Effect)
+            });
+
+            parser.parse_variant_cast::<EffectKind>(Precedence::default());
         })
     }
 }

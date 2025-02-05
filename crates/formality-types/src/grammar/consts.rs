@@ -11,6 +11,7 @@ pub use valtree::*;
 pub struct Const {
     data: Arc<ConstData>,
 }
+
 impl Const {
     pub fn data(&self) -> &ConstData {
         &self.data
@@ -59,7 +60,7 @@ impl DowncastTo<ConstData> for Const {
 impl DowncastTo<Const> for Parameter {
     fn downcast_to(&self) -> Option<Const> {
         match self {
-            Parameter::Ty(_) | Parameter::Lt(_) => None,
+            Parameter::Effect(_) | Parameter::Ty(_) | Parameter::Lt(_) => None,
             Parameter::Const(c) => Some(c.clone()),
         }
     }

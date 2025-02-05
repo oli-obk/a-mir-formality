@@ -2,6 +2,7 @@
 
 mod coherence_orphan;
 mod coherence_overlap;
+mod const_traits;
 mod consts;
 mod decl_safety;
 mod functions;

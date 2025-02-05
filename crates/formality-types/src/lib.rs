@@ -16,6 +16,7 @@ formality_core::declare_language! {
             "enum",
             "union",
             "const",
+            "do",
             "true",
             "false",
             "static",

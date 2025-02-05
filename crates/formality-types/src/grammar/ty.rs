@@ -7,8 +7,8 @@ mod term_impls;
 use formality_core::{DowncastTo, To, Upcast, UpcastFrom};
 
 use super::{
-    consts::Const, AdtId, AssociatedItemId, Binder, BoundVar, ExistentialVar, FnId, TraitId,
-    UniversalVar, Variable,
+    consts::Const, AdtId, AssociatedItemId, Binder, BoundVar, Effect, ExistentialVar, FnId,
+    TraitId, UniversalVar, Variable,
 };
 
 #[term]
@@ -248,6 +248,8 @@ pub enum Parameter {
     Lt(Lt),
     #[grammar(const $v0)]
     Const(Const),
+    #[grammar(do $v0)]
+    Effect(Effect),
 }
 
 impl Parameter {
@@ -256,6 +258,7 @@ impl Parameter {
             Parameter::Ty(_) => ParameterKind::Ty,
             Parameter::Lt(_) => ParameterKind::Lt,
             Parameter::Const(_) => ParameterKind::Const,
+            Parameter::Effect(_) => ParameterKind::Effect,
         }
     }
 
@@ -268,6 +271,7 @@ impl Parameter {
             Parameter::Ty(v) => v.as_variable(),
             Parameter::Lt(v) => v.as_variable(),
             Parameter::Const(v) => v.as_variable(),
+            Parameter::Effect(v) => v.as_variable(),
         }
     }
 }
@@ -280,6 +284,7 @@ pub enum ParameterKind {
     Ty,
     Lt,
     Const,
+    Effect,
 }
 
 #[term]
@@ -349,6 +354,7 @@ impl UpcastFrom<Variable> for Parameter {
             ParameterKind::Lt => Lt::new(v).upcast(),
             ParameterKind::Ty => Ty::new(v).upcast(),
             ParameterKind::Const => Const::new(v).upcast(),
+            ParameterKind::Effect => Effect::new(v).upcast(),
         }
     }
 }
